@@ -13,7 +13,7 @@
       - [Connecting to a SDR or other hardware device](#connecting-to-a-sdr-or-other-hardware-device)
         - [Mandatory parameters](#mandatory-parameters-1)
         - [Optional/Additional Parameters](#optionaladditional-parameters)
-        - [AutoGain for RTLSDR Devices](#autogain-for-rtlsdr-devices)
+        - [SuperEGO™ AutoGain for RTLSDR Devices](#autogain-for-rtlsdr-devices)
       - [Connecting to external ADSB data sources](#connecting-to-external-adsb-data-sources)
         - [All-in-One Configuration using `ULTRAFEEDER_CONFIG`](#all-in-one-configuration-using-ultrafeeder_config)
         - [Networking parameters](#networking-parameters)
@@ -233,9 +233,9 @@ If you want to connect your SDR to the container, here's how to do that:
 | `READSB_GAIN`       | Set gain (in dB). Use `autogain` to have the container determine an appropriate gain, more on this below.                                   | `--gain=<db>`                  | Max gain |
 | `READSB_RTLSDR_PPM` | Set oscillator frequency correction in PPM. See [Estimating PPM](https://github.com/sdr-enthusiasts/docker-readsb-protobuf/#estimating-ppm) | `--ppm=<correction>`           | Unset    |
 
-##### AutoGain for RTLSDR Devices
+##### SuperEGO™ AutoGain for RTLSDR Devices
 
-If you have set `READSB_GAIN=autogain`, then the system will take signal strength measurements to determine the optimal gain. The AutoGain functionality is based on a (slightly) modified version of [Wiedehopf's AutoGain](https://github.com/wiedehopf/autogain). AutoGain will only work with `rtlsdr` style receivers.
+If you have set `READSB_GAIN=autogain`, then the system will take signal strength measurements to determine the optimal gain. The Super External Gain Optimization (SuperEGO™) AutoGain functionality is based on a modified version of [Wiedehopf's AutoGain](https://github.com/wiedehopf/autogain). SuperEGO™ AutoGain will only work with `rtlsdr` style receivers.
 
 There are 2 distinct periods in which the container will attempt to figure out the gain:
 
@@ -244,9 +244,9 @@ There are 2 distinct periods in which the container will attempt to figure out t
 
 Please note that in order for the initial period to complete, the container must run for 90 minutes without restarting.
 
-When taking measurements, if the percentage of "strong signals" (i.e., ADSB messages with RSSI > 3 dB) is larger than 6%, AutoGain will reduce the receiver's gain by 1 setting. Similarly, if the percentage of strong signals is smaller than 2.5%, AutoGain will increment the receiver's gain by 1 setting. When AutoGain changes the gain value, the `readsb` component of the container will restart. This may show as a disconnect / reconnected in container logs.
+When taking measurements, if the percentage of "strong signals" (i.e., ADSB messages with RSSI > 3 dB) is larger than 6%, SuperEGO™ AutoGain will reduce the receiver's gain by 1 setting. Similarly, if the percentage of strong signals is smaller than 2.5%, SuperEGO™ AutoGain will increment the receiver's gain by 1 setting. When SuperEGO™ AutoGain changes the gain value, the `readsb` component of the container will restart. This may show as a disconnect / reconnected in container logs.
 
-We recommend running the initial period during times when there are a lot of planes overhead, so the system will get a good initial view of what signals look like when traffic is at its peak for your location. If you forgot to do this for any reason, feel free to give the AutoGain reset command (see below) during flights busy hour.
+We recommend running the initial period during times when there are a lot of planes overhead, so the system will get a good initial view of what signals look like when traffic is at its peak for your location. If you forgot to do this for any reason, feel free to give the SuperEGO™ AutoGain reset command (see below) during flights busy hour.
 
 Although not recommended, you can change the measurement intervals and low/high cutoffs with these parameters:
 
@@ -258,7 +258,7 @@ Although not recommended, you can change the measurement intervals and low/high 
 | `READSB_AUTOGAIN_LOW_PCT`             | If the percentage of "strong signals" (stronger than 3dBFS RSSI) is below this number, gain will be increased | `2.5`   |
 | `READSB_AUTOGAIN_HIGH_PCT`            | If the percentage of "strong signals" (stronger than 3dBFS RSSI) is above this number, gain will be decreased | `6.0`   |
 
-If you need to reset AutoGain and start over determining the gain, you can do so with this command:
+If you need to reset SuperEGO™ AutoGain and start over determining the gain, you can do so with this command:
 
 ```bash
 docker exec -it ultrafeeder /usr/local/bin/autogain1090 reset
